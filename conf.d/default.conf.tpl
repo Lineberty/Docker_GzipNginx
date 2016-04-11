@@ -28,7 +28,7 @@ server {
   server_name _;
     
   ssl_certificate           ${SSL_CRT-"/secret/tls.crt"};
-  ssl_certificate_key       ${SSL_KEY-"secret/tls.key"};
+  ssl_certificate_key       ${SSL_KEY-"/secret/tls.key"};
 
   ssl on;
   ssl_session_cache  builtin:1000  shared:SSL:10m;
