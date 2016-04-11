@@ -22,7 +22,7 @@ server {
   }           
 }
 
-{{ if (and (exists "../../../${SSL_CRT-"/secret/tls.crt"}") (exists "../../../${SSL_KEY-"secret/tls.key"}")) }}
+{{ if (and (exists "../../../${SSL_CRT-"/secret/tls.crt"}") (exists "../../../${SSL_KEY-"/secret/tls.key"}")) }}
 server {
 	listen ${NGINX_HTTPS_PORT-"443"};
   server_name _;
