@@ -1,9 +1,9 @@
 upstream local {
-	server ${BACKEND_IP}:${BACKEND_PORT} fail_timeout=10s;
+	server ${BACKEND_IP-"127.0.0.1"}:${BACKEND_PORT-"8080"} fail_timeout=10s;
 }
 
 server {
-	listen ${NGINX_PORT};
+	listen ${NGINX_PORT-"80"};
   server_name _;
     
   location / {
@@ -13,22 +13,22 @@ server {
    	proxy_connect_timeout 90;
    	proxy_redirect        off;
     
-    proxy_set_header  Host                ${DOLLAR}host;
-    proxy_set_header  X-Real-IP           ${DOLLAR}remote_addr;
-    proxy_set_header  X-Forwarded-Proto   ${DOLLAR}scheme;
-    proxy_set_header  X-Forwarded-Host    ${DOLLAR}host;
-    proxy_set_header  X-Forwarded-Server  ${DOLLAR}host;
-    proxy_set_header  X-Forwarded-For     ${DOLLAR}proxy_add_x_forwarded_for;
+    proxy_set_header  Host                \$host;
+    proxy_set_header  X-Real-IP           \$remote_addr;
+    proxy_set_header  X-Forwarded-Proto   \$scheme;
+    proxy_set_header  X-Forwarded-Host    \$host;
+    proxy_set_header  X-Forwarded-Server  \$host;
+    proxy_set_header  X-Forwarded-For     \$proxy_add_x_forwarded_for;
   }           
 }
 
-{{ if (and (exists "${SSL_CRT}") (exists "${SSL_KEY}")) }}
+{{ if (and (exists "../../../${SSL_CRT-"/secret/tls.crt"}") (exists "../../../${SSL_KEY-"secret/tls.key"}")) }}
 server {
-	listen ${NGINX_HTTPS_PORT};
+	listen ${NGINX_HTTPS_PORT-"443"};
   server_name _;
     
-  ssl_certificate           ${SSL_CRT};
-  ssl_certificate_key       ${SSL_KEY};
+  ssl_certificate           ${SSL_CRT-"/secret/tls.crt"};
+  ssl_certificate_key       ${SSL_KEY-"secret/tls.key"};
 
   ssl on;
   ssl_session_cache  builtin:1000  shared:SSL:10m;
@@ -43,12 +43,12 @@ server {
    	proxy_connect_timeout 90;
    	proxy_redirect        off;
     
-    proxy_set_header  Host                ${DOLLAR}host;
-    proxy_set_header  X-Real-IP           ${DOLLAR}remote_addr;
-    proxy_set_header  X-Forwarded-Proto   ${DOLLAR}scheme;
-    proxy_set_header  X-Forwarded-Host    ${DOLLAR}host;
-    proxy_set_header  X-Forwarded-Server  ${DOLLAR}host;
-    proxy_set_header  X-Forwarded-For     ${DOLLAR}proxy_add_x_forwarded_for;
+    proxy_set_header  Host                \$host;
+    proxy_set_header  X-Real-IP           \$remote_addr;
+    proxy_set_header  X-Forwarded-Proto   \$scheme;
+    proxy_set_header  X-Forwarded-Host    \$host;
+    proxy_set_header  X-Forwarded-Server  \$host;
+    proxy_set_header  X-Forwarded-For     \$proxy_add_x_forwarded_for;
   }           
 }
 {{ end }}

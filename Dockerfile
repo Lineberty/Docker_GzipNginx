@@ -2,18 +2,21 @@ FROM nginx:1.9
 
 MAINTAINER Lineberty "itadmin@lineberty.com"
 
+# Install wget and install/updates certificates
+RUN apt-get update \
+ && apt-get install -y -q --no-install-recommends \
+    ca-certificates \
+    wget \
+ && apt-get clean \
+ && rm -r /var/lib/apt/lists/*
+ 
+ENV SIGIL_VERSION 0.4.0
+ 
+RUN wget -O- https://github.com/gliderlabs/sigil/releases/download/v${SIGIL_VERSION}/sigil_${SIGIL_VERSION}_Linux_x86_64.tgz | tar xzC /usr/local/bin
+
 COPY ./conf.d/default.conf.tpl /etc/nginx/conf.d/default.conf.tpl
 COPY ./conf.d/gzip.conf /etc/nginx/conf.d/gzip.conf
 
 EXPOSE 80
 
-ENV DOLLAR='$'
-
-ENV NGINX_PORT=80
-ENV NGINX_HTTPS_PORT=443
-ENV BACKEND_IP=127.0.0.1
-ENV BACKEND_PORT=8080
-ENV SSL_CRT=/secret/tls.crt
-ENV SSL_KEY=/secret/tls.key
-
-CMD /bin/bash -c "envsubst < /etc/nginx/conf.d/default.conf.tpl > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+CMD /bin/bash -c "/usr/local/bin/sigil -p -f /etc/nginx/conf.d/default.conf.tpl > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
