@@ -5,6 +5,8 @@ upstream local {
 server {
 	listen ${NGINX_PORT-"80"};
   server_name _;
+
+  access_log /var/log/nginx/access.log upstream_time;
     
   location / {
   	proxy_pass   http://local;
@@ -27,6 +29,8 @@ server {
 	listen ${NGINX_HTTPS_PORT-"443"};
   server_name _;
     
+  access_log /var/log/nginx/access.log upstream_time;
+
   ssl_certificate           ${SSL_CRT-"/secret/tls.crt"};
   ssl_certificate_key       ${SSL_KEY-"/secret/tls.key"};
 
