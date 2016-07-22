@@ -9,6 +9,7 @@ server {
   access_log /var/log/nginx/access.log upstream_time;
     
   location / {
+    client_max_body_size 20m;
   	proxy_pass   http://local;
     
    	proxy_read_timeout    90;
@@ -41,6 +42,7 @@ server {
   ssl_prefer_server_ciphers on;
     
   location / {
+    client_max_body_size 20m;
   	proxy_pass   http://local;
     
    	proxy_read_timeout    90;
