@@ -17,12 +17,7 @@ server {
 
     # only for upload
     client_max_body_size 20m;
-   	proxy_buffer_size   256k;
-    proxy_buffers   8 512k;
-    proxy_busy_buffers_size   512k;
-    fastcgi_buffers 8 512k;
-    fastcgi_buffer_size 512k;
-    
+
     proxy_set_header  Host                \$host;
     proxy_set_header  X-Real-IP           \$remote_addr;
     proxy_set_header  X-Forwarded-Proto   \$scheme;
@@ -53,12 +48,7 @@ server {
 
   	# only for upload
     client_max_body_size 20m;
-    proxy_buffer_size   256k;
-    proxy_buffers   8 512k;
-    proxy_busy_buffers_size   512k;
-    fastcgi_buffers 8 512k;
-    fastcgi_buffer_size 512k;
-    
+
    	proxy_read_timeout    90;
    	proxy_connect_timeout 90;
    	proxy_redirect        off;
