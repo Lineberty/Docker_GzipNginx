@@ -1,4 +1,4 @@
-FROM nginx:1.11.8
+FROM nginx:1.11.10
 
 MAINTAINER Lineberty "itadmin@lineberty.com"
 
