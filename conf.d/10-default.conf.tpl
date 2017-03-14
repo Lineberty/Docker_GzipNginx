@@ -2,6 +2,16 @@ upstream local {
 	server ${BACKEND_IP-"127.0.0.1"}:${BACKEND_PORT-"8080"} fail_timeout=10s;
 }
 
+map \$http_sec_websocket_key \$upgr {
+    ""      "";           # If the Sec-Websocket-Key header is empty, send no upgrade header
+    default "websocket";  # If the header is present, set Upgrade to "websocket"
+}
+
+map \$http_sec_websocket_key \$conn {
+    ""      \$http_connection;  # If no Sec-Websocket-Key header exists, set $conn to the incoming Connection header
+    default "upgrade";         # Otherwise, set $conn to upgrade
+}
+
 server {
 	listen ${NGINX_PORT-"80"};
   server_name _;
@@ -18,6 +28,9 @@ server {
     # only for upload
     client_max_body_size 20m;
 
+    proxy_http_version 1.1;
+    proxy_set_header   Upgrade $upgr;
+    proxy_set_header   Connection $conn;
     proxy_set_header  Host                \$host;
     proxy_set_header  X-Real-IP           \$remote_addr;
     proxy_set_header  X-Forwarded-Proto   \$scheme;
@@ -54,8 +67,8 @@ server {
    	proxy_redirect        off;
     
     proxy_http_version 1.1;
-    proxy_set_header   Upgrade $http_upgrade;
-    proxy_set_header   Connection "upgrade";
+    proxy_set_header   Upgrade $upgr;
+    proxy_set_header   Connection $conn;
     proxy_set_header   Host                \$host;
     proxy_set_header   X-Real-IP           \$remote_addr;
     proxy_set_header   X-Forwarded-Proto   \$scheme;
