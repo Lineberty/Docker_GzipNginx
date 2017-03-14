@@ -29,8 +29,8 @@ server {
     client_max_body_size 20m;
 
     proxy_http_version 1.1;
-    proxy_set_header   Upgrade $upgr;
-    proxy_set_header   Connection $conn;
+    proxy_set_header  Upgrade \$upgr;
+    proxy_set_header  Connection \$conn;
     proxy_set_header  Host                \$host;
     proxy_set_header  X-Real-IP           \$remote_addr;
     proxy_set_header  X-Forwarded-Proto   \$scheme;
