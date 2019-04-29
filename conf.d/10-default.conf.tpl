@@ -38,6 +38,9 @@ server {
     proxy_set_header  X-Forwarded-Host    \$host;
     proxy_set_header  X-Forwarded-Server  \$host;
     proxy_set_header  X-Forwarded-For     \$proxy_add_x_forwarded_for;
+    chunked_transfer_encoding off;
+    proxy_buffering off;
+    proxy_cache off;
   }           
 }
 
