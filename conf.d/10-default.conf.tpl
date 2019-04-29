@@ -30,6 +30,9 @@ server {
     client_max_body_size     20m;
 
     proxy_http_version 1.1;
+    chunked_transfer_encoding off;
+    proxy_buffering off;
+    proxy_cache off;
     proxy_set_header  Upgrade \$upgr;
     proxy_set_header  Connection \$conn;
     proxy_set_header  Host                \$host;
@@ -38,9 +41,6 @@ server {
     proxy_set_header  X-Forwarded-Host    \$host;
     proxy_set_header  X-Forwarded-Server  \$host;
     proxy_set_header  X-Forwarded-For     \$proxy_add_x_forwarded_for;
-    chunked_transfer_encoding off;
-    proxy_buffering off;
-    proxy_cache off;
   }           
 }
 
