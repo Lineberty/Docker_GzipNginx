@@ -69,7 +69,10 @@ server {
    	proxy_read_timeout    90;
    	proxy_connect_timeout 90;
    	proxy_redirect        off;
-    
+
+    chunked_transfer_encoding off;
+    proxy_buffering off;
+    proxy_cache off;
     proxy_http_version 1.1;
     proxy_set_header   Upgrade $upgr;
     proxy_set_header   Connection $conn;
