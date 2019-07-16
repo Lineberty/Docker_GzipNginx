@@ -43,19 +43,36 @@ server {
 
 {{ if (and (exists "../../../${SSL_CRT-"/secret/tls.crt"}") (exists "../../../${SSL_KEY-"/secret/tls.key"}")) }}
 server {
-	listen ${NGINX_HTTPS_PORT-"443"};
+  listen ${NGINX_HTTPS_PORT-"443"} http2;
   server_name _;
     
   access_log /var/log/nginx/access.log upstream_time;
 
+  # https://ssl-config.mozilla.org/#server=nginx&server-version=1.17.1&config=intermediate
+  # https://www.cloudinsidr.com/content/how-to-activate-http2-with-ssltls-encryption-in-nginx-for-secure-connections/#more-123
   ssl_certificate           ${SSL_CRT-"/secret/tls.crt"};
   ssl_certificate_key       ${SSL_KEY-"/secret/tls.key"};
 
   ssl on;
   ssl_session_cache  builtin:1000  shared:SSL:10m;
-  ssl_protocols  TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
-  ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+
+  # curl https://ssl-config.mozilla.org/ffdhe2048.txt > /path/to/dhparam.pem
+  ssl_dhparam ${SSL_DH_PARAM-"/secret/dhparam.pem"};
+
+  # Intermediate configuration
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
   ssl_prefer_server_ciphers on;
+
+  # HSTS (ngx_http_headers_module is required) (63072000 seconds)
+  add_header Strict-Transport-Security "max-age=31536000" always;
+
+  # OCSP stapling
+  ssl_stapling on;
+  ssl_stapling_verify on;
+
+  # verify chain of trust of OCSP response using Root CA and Intermediate certs
+  ssl_trusted_certificate ${SSL_CA_CERT-"/secret/ca.crt"};
     
   location / {
   	proxy_pass   http://local;

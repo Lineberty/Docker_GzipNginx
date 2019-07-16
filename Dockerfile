@@ -1,14 +1,14 @@
-FROM nginx:1.15.12
+FROM nginx:1.17.1-alpine
 
 MAINTAINER Lineberty "itadmin@lineberty.com"
 
 # Install wget and install/updates certificates
-RUN apt-get update \
- && apt-get install -y -q --no-install-recommends \
+RUN apk update \
+ && apk add  \
+    bash \
     ca-certificates \
     wget \
- && apt-get clean \
- && rm -r /var/lib/apt/lists/*
+ && rm -rf /var/cache/apk/*
  
 ENV SIGIL_VERSION 0.4.0
  
