@@ -26,8 +26,8 @@ server {
    	proxy_redirect        off;
 
     # only for upload
-    client_body_buffer_size  10M;
-    client_max_body_size     20m;
+    client_body_buffer_size  50M;
+    client_max_body_size     50m;
 
     proxy_http_version 1.1;
     proxy_set_header  Upgrade \$upgr;
