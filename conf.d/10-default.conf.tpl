@@ -26,7 +26,6 @@ server {
    	proxy_redirect        off;
 
     # only for upload
-    client_body_buffer_size  500k;
     client_max_body_size     50m;
 
     proxy_http_version 1.1;
