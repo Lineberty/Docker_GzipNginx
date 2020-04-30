@@ -182,6 +182,29 @@ server {
    	proxy_read_timeout    90;
    	proxy_connect_timeout 90;
    	proxy_redirect        off;
+    chunked_transfer_encoding off;
+    proxy_buffering off;
+    proxy_cache off;
+    proxy_http_version 1.1;
+    proxy_set_header   Upgrade $upgr;
+    proxy_set_header   Connection $conn;
+    proxy_set_header   Host                \$host;
+    proxy_set_header   X-Real-IP           \$remote_addr;
+    proxy_set_header   X-Forwarded-Proto   \$scheme;
+    proxy_set_header   X-Forwarded-Host    \$host;
+    proxy_set_header   X-Forwarded-Server  \$host;
+    proxy_set_header   X-Forwarded-For     \$proxy_add_x_forwarded_for;
+  }
+
+  location /api/api_validation/endpoints/[0-9a-zA-Z\-_]+/sse {
+  	proxy_pass   http://local;
+
+  	# only for upload
+    client_max_body_size 20m;
+
+   	proxy_read_timeout    90;
+   	proxy_connect_timeout 90;
+   	proxy_redirect        off;
 
     chunked_transfer_encoding off;
     proxy_buffering off;
